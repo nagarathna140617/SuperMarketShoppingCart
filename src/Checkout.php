@@ -73,12 +73,22 @@ class Checkout implements CheckoutInterface
     private function calculateDiscount() : int
     {
         $totalDiscount = 0;
-
+        echo '<pre>';
         foreach ($this->discounts as $key => $discount) {
-            if ($this->stats[$key] >= $discount->getThreshold()) {
-                $numberOfSets = floor($this->stats[$key] / $discount->getThreshold());
-                $totalDiscount += ($discount->getAmount() * $numberOfSets);
+            if(is_object($discount)){
+                    if ($this->stats[$key] >= $discount->getThreshold()) {
+                    $numberOfSets = floor($this->stats[$key] / $discount->getThreshold());
+                    $totalDiscount += ($discount->getAmount() * $numberOfSets);
+                }
+            } else{
+                foreach($discount as $indexKey => $discountVal){
+                    if ($this->stats[$key] >= $discountVal->getThreshold()) {
+                        $numberOfSets = floor($this->stats[$key] / $discountVal->getThreshold());
+                        $totalDiscount += ($discountVal->getAmount() * $numberOfSets);
+                    }
+                }
             }
+            
         }
 
         return $totalDiscount;
